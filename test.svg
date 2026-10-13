@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A3832"/>
+      <stop offset="50%" stop-color="#12544B"/>
+      <stop offset="100%" stop-color="#062420"/>
+    </linearGradient>
+
+    <!-- Metallic Racket Frame Gradient -->
+    <linearGradient id="frameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7FA"/>
+      <stop offset="40%" stop-color="#80CBC4"/>
+      <stop offset="70%" stop-color="#004D40"/>
+      <stop offset="100%" stop-color="#1DE9B6"/>
+    </linearGradient>
+
+    <!-- Handle Grip Gradient -->
+    <linearGradient id="gripGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004D40"/>
+      <stop offset="100%" stop-color="#00251A"/>
+    </linearGradient>
+
+    <!-- Shuttlecock Feather Gradient -->
+    <linearGradient id="featherGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E0F2F1"/>
+    </linearGradient>
+
+    <!-- Shuttlecock Base Gradient -->
+    <linearGradient id="corkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#B2DFDB"/>
+    </linearGradient>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Pattern for Racket String Bed -->
+    <pattern id="stringGrid" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M 12 0 L 0 0 0 12" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-opacity="0.4"/>
+    </pattern>
+
+    <!-- Clip Path for Racket Head Strings -->
+    <clipPath id="headClip">
+      <ellipse cx="185" cy="185" rx="72" ry="92" transform="rotate(-45 185 185)"/>
+    </clipPath>
+  </defs>
+
+  <!-- App Icon Background Squircle -->
+  <rect x="32" y="32" width="448" height="448" rx="105" fill="url(#bgGrad)"/>
+
+  <!-- Decorative Subtle Background Court Lines -->
+  <path d="M 64 320 C 180 320, 320 180, 320 64" fill="none" stroke="#1DE9B6" stroke-width="2" stroke-opacity="0.15"/>
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.05"/>
+
+  <!-- Dynamic Motion Trails for Shuttlecock -->
+  <g opacity="0.3" filter="url(#glow)">
+    <path d="M 330 135 C 290 120, 230 130, 185 165" fill="none" stroke="#1DE9B6" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 12"/>
+    <path d="M 365 170 C 330 160, 270 180, 225 225" fill="none" stroke="#1DE9B6" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 10"/>
+  </g>
+
+  <!-- MAIN RACKET GROUP -->
+  <g filter="url(#dropShadow)">
+    <!-- Racket Handle / Grip -->
+    <rect x="338" y="338" width="28" height="90" rx="7" transform="rotate(-45 338 338)" fill="url(#gripGrad)"/>
+    
+    <!-- Grip Ribs / Texture -->
+    <g stroke="#1DE9B6" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round">
+      <line x1="360" y1="365" x2="375" y2="380"/>
+      <line x1="372" y1="377" x2="387" y2="392"/>
+      <line x1="384" y1="389" x2="399" y2="404"/>
+      <line x1="396" y1="401" x2="411" y2="416"/>
+    </g>
+
+    <!-- Handle Base Cap -->
+    <path d="M 412 412 L 424 424 A 4 4 0 0 1 421 430 L 415 436 A 4 4 0 0 1 409 433 L 397 421 Z" fill="#004D40"/>
+
+    <!-- Shaft -->
+    <path d="M 236 236 L 350 350" stroke="url(#frameGrad)" stroke-width="9" stroke-linecap="round"/>
+    <path d="M 236 236 L 350 350" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+
+    <!-- Shaft / Throat Joint Accent -->
+    <ellipse cx="240" cy="240" rx="7" ry="4" transform="rotate(-45 240 240)" fill="#1DE9B6"/>
+
+    <!-- Racket Throat (V-Shape) -->
+    <path d="M 226 220 L 240 240 L 220 226 C 222 222, 224 221, 226 220 Z" fill="url(#frameGrad)"/>
+
+    <!-- String Bed Overlay -->
+    <ellipse cx="185" cy="185" rx="72" ry="92" transform="rotate(-45 185 185)" fill="none"/>
+    <g clip-path="url(#headClip)">
+      <rect x="80" y="80" width="210" height="210" fill="url(#stringGrid)"/>
+      <!-- String Outer Shadow Glow -->
+      <ellipse cx="185" cy="185" rx="72" ry="92" transform="rotate(-45 185 185)" fill="none" stroke="#1DE9B6" stroke-width="6" opacity="0.2"/>
+    </g>
+
+    <!-- Racket Frame Rim -->
+    <ellipse cx="185" cy="185" rx="74" ry="94" transform="rotate(-45 185 185)" fill="none" stroke="url(#frameGrad)" stroke-width="10"/>
+    <ellipse cx="185" cy="185" rx="74" ry="94" transform="rotate(-45 185 185)" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.6"/>
+
+    <!-- Frame Highlight Secion -->
+    <path d="M 125 125 A 74 94 0 0 1 230 140" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+  </g>
+
+  <!-- SHUTTLECOCK GROUP -->
+  <g filter="url(#dropShadow)">
+    <!-- Shuttlecock Shadow Layer / Outer Glow -->
+    <g transform="translate(320, 150) rotate(25)">
+      
+      <!-- Feather Shadow Layer (Back) -->
+      <path d="M -38 -55 L -20 5 L 0 15 L 20 5 L 38 -55 C 20 -48, -20 -48, -38 -55 Z" fill="#003630" opacity="0.3"/>
+
+      <!-- Feathers Background Layer -->
+      <path d="M -35 -50 L -12 0 L 0 10 L 12 0 L 35 -50 Z" fill="#B2DFDB"/>
+
+      <!-- Individual Feather Vanes -->
+      <!-- Outer Left Feather -->
+      <path d="M -36 -52 C -38 -30, -22 -10, -14 2 L -25 -20 C -30 -35, -34 -48, -36 -52 Z" fill="url(#featherGrad)"/>
+      <!-- Inner Left Feather -->
+      <path d="M -22 -58 C -22 -35, -12 -5, -6 7 L -14 -18 C -18 -32, -20 -45, -22 -58 Z" fill="#FFFFFF"/>
+      <!-- Center Feather -->
+      <path d="M -8 -60 L 8 -60 L 5 10 L -5 10 Z" fill="url(#featherGrad)"/>
+      <!-- Inner Right Feather -->
+      <path d="M 22 -58 C 22 -35, 12 -5, 6 7 L 14 -18 C 18 -32, 20 -45, 22 -58 Z" fill="#FFFFFF"/>
+      <!-- Outer Right Feather -->
+      <path d="M 36 -52 C 38 -30, 22 -10, 14 2 L 25 -20 C 30 -35, 34 -48, 36 -52 Z" fill="url(#featherGrad)"/>
+
+      <!-- Feather Overlap Lines & Details -->
+      <path d="M -30 -32 Q 0 -22 30 -32" fill="none" stroke="#004D40" stroke-width="1.5" opacity="0.25"/>
+      <path d="M -24 -15 Q 0 -8 24 -15" fill="none" stroke="#004D40" stroke-width="1.5" opacity="0.25"/>
+
+      <!-- Fastening Threads / Ribbons -->
+      <path d="M -28 -28 Q 0 -18 28 -28" fill="none" stroke="#1DE9B6" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M -20 -12 Q 0 -4 20 -12" fill="none" stroke="#1DE9B6" stroke-width="3" stroke-linecap="round"/>
+
+      <!-- Cork Base (Head) -->
+      <path d="M -15 2 C -15 2, -16 16, -12 24 C -7 33, 7 33, 12 24 C 16 16, 15 2, 15 2 Z" fill="url(#corkGrad)"/>
+      
+      <!-- Cork Synthetic Red/Teal Band -->
+      <path d="M -15 2 C -10 5, 10 5, 15 2 L 14 8 C 10 11, -10 11, -14 8 Z" fill="#FF5252"/>
+
+      <!-- Cork Highlight -->
+      <path d="M -6 18 C -3 25, 3 25, 6 18" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+    </g>
+  </g>
+
+  <!-- High-Energy Impact Sparkles near Racket Center -->
+  <g fill="#1DE9B6" opacity="0.75" filter="url(#glow)">
+    <circle cx="275" cy="205" r="4"/>
+    <circle cx="295" cy="225" r="2.5"/>
+    <circle cx="250" cy="175" r="3"/>
+    <path d="M 285 180 L 288 186 L 294 189 L 288 192 L 285 198 L 282 192 L 276 189 L 282 186 Z" fill="#FFFFFF"/>
+  </g>
+</svg>

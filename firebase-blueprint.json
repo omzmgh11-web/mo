@@ -1,0 +1,168 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile containing authenticated identity details",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Firebase Auth UID of the account owner"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "User primary email address"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "User display name"
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 1024,
+          "description": "User avatar image URL"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account profile was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user account profile was last updated"
+        }
+      },
+      "required": ["ownerId", "email"]
+    },
+    "LessonDeck": {
+      "title": "LessonDeck",
+      "description": "Vocabulary card list and metadata for a specific lesson number",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Firebase Auth UID of the deck owner"
+        },
+        "lessonId": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Document identifier matching lesson ID"
+        },
+        "lessonNumber": {
+          "type": "number",
+          "description": "Lesson number index between 0 and 30"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Custom title or topic description for the lesson"
+        },
+        "words": {
+          "type": "array",
+          "description": "List of flashcard word objects belonging to this lesson"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of the last modification"
+        }
+      },
+      "required": ["ownerId", "lessonId", "lessonNumber", "words"]
+    },
+    "StudyProgress": {
+      "title": "StudyProgress",
+      "description": "Spaced repetition state, completed days, favorites, weak words, and study metrics",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Firebase Auth UID of the progress owner"
+        },
+        "spacedSystem": {
+          "type": "string",
+          "enum": ["3", "4", "5"],
+          "description": "Selected spaced repetition system"
+        },
+        "selectedDay": {
+          "type": "number",
+          "description": "Currently active study day index (0-30)"
+        },
+        "completedDays": {
+          "type": "object",
+          "description": "Map of day index to completion flag"
+        },
+        "completedDayLessons": {
+          "type": "object",
+          "description": "Map of composite day_lesson key to completion flag"
+        },
+        "completedDaysDates": {
+          "type": "object",
+          "description": "Map of day index to completion date string"
+        },
+        "lessonTitles": {
+          "type": "object",
+          "description": "Map of lesson indices to custom titles"
+        },
+        "autoSpeak5Sec": {
+          "type": "boolean",
+          "description": "Whether to auto-speak words after 5 seconds"
+        },
+        "dailyLearnedWords": {
+          "type": "object",
+          "description": "Log of unique learned words per date"
+        },
+        "favorites": {
+          "type": "object",
+          "description": "Map of favorite word keys"
+        },
+        "weakWords": {
+          "type": "object",
+          "description": "Map of weak words to mistake counters"
+        },
+        "hints": {
+          "type": "object",
+          "description": "Map of custom word hints and mnemonics"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of the last progress sync"
+        }
+      },
+      "required": ["ownerId", "spacedSystem", "selectedDay"]
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Simple document used to verify Firestore connectivity on app boot",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Health status string"
+        }
+      },
+      "required": ["status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual user profile information with strict owner-only access"
+    },
+    "/users/{userId}/decks/{deckId}": {
+      "schema": "LessonDeck",
+      "description": "Custom flashcard decks belonging to a user"
+    },
+    "/users/{userId}/progress/main": {
+      "schema": "StudyProgress",
+      "description": "User spaced repetition study progress and mastery settings"
+    },
+    "/test/{testId}": {
+      "schema": "TestConnection",
+      "description": "Test document for startup connectivity verification"
+    }
+  }
+}

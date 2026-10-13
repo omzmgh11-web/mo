@@ -1,0 +1,8 @@
+{
+  "name": "فلاش كارت فرنسي 7",
+  "description": "تطبيق فلاش كارت ذكي لتعلم المفردات الفرنسية مع نطق صوتي وصور توضيحية وتحليل الكلمات بالذكاء الاصطناعي",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

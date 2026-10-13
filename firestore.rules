@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Primitives
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Validation Blueprint: UserProfile
+    function isValidUserProfile(data, userId) {
+      return data.keys().hasAll(['ownerId', 'email']) &&
+             data.keys().hasOnly(['ownerId', 'email', 'displayName', 'photoURL', 'createdAt', 'updatedAt']) &&
+             data.ownerId == request.auth.uid &&
+             data.ownerId == userId &&
+             data.email is string && data.email.size() <= 256 &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 128)) &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 1024));
+    }
+
+    // Validation Blueprint: LessonDeck
+    function isValidLessonDeck(data, userId) {
+      return data.keys().hasAll(['ownerId', 'lessonId', 'lessonNumber', 'words']) &&
+             data.keys().hasOnly(['ownerId', 'lessonId', 'lessonNumber', 'title', 'words', 'updatedAt']) &&
+             data.ownerId == request.auth.uid &&
+             data.ownerId == userId &&
+             data.lessonId is string && data.lessonId.size() <= 32 &&
+             data.lessonNumber is number && data.lessonNumber >= 0 && data.lessonNumber <= 30 &&
+             (!('title' in data) || (data.title is string && data.title.size() <= 120)) &&
+             data.words is list && data.words.size() <= 300;
+    }
+
+    // Validation Blueprint: StudyProgress
+    function isValidStudyProgress(data, userId) {
+      return data.keys().hasAll(['ownerId', 'spacedSystem', 'selectedDay']) &&
+             data.keys().hasOnly(['ownerId', 'spacedSystem', 'selectedDay', 'completedDays', 'completedDayLessons', 'completedDaysDates', 'lessonTitles', 'autoSpeak5Sec', 'dailyLearnedWords', 'favorites', 'weakWords', 'hints', 'updatedAt']) &&
+             data.ownerId == request.auth.uid &&
+             data.ownerId == userId &&
+             data.spacedSystem in ['3', '4', '5'] &&
+             data.selectedDay is number && data.selectedDay >= 0 && data.selectedDay <= 30 &&
+             (!('completedDays' in data) || data.completedDays is map) &&
+             (!('completedDayLessons' in data) || data.completedDayLessons is map) &&
+             (!('completedDaysDates' in data) || data.completedDaysDates is map) &&
+             (!('lessonTitles' in data) || data.lessonTitles is map) &&
+             (!('autoSpeak5Sec' in data) || data.autoSpeak5Sec is bool) &&
+             (!('dailyLearnedWords' in data) || data.dailyLearnedWords is map) &&
+             (!('favorites' in data) || data.favorites is map) &&
+             (!('weakWords' in data) || data.weakWords is map) &&
+             (!('hints' in data) || data.hints is map);
+    }
+
+    // User Profile Collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming(), userId);
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming(), userId) &&
+                    incoming().ownerId == existing().ownerId &&
+                    (!('createdAt' in existing()) || incoming().createdAt == existing().createdAt);
+      allow delete: if isOwner(userId) && isValidId(userId);
+
+      // User Lesson Decks Subcollection
+      match /decks/{deckId} {
+        allow get: if isOwner(userId) && isValidId(userId) && isValidId(deckId);
+        allow list: if isOwner(userId) && isValidId(userId);
+        allow create: if isOwner(userId) && isValidId(userId) && isValidId(deckId) && isValidLessonDeck(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(userId) && isValidId(deckId) && isValidLessonDeck(incoming(), userId) &&
+                      incoming().ownerId == existing().ownerId &&
+                      incoming().lessonId == existing().lessonId;
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(deckId);
+      }
+
+      // User Study Progress Subcollection
+      match /progress/{progressId} {
+        allow get: if isOwner(userId) && isValidId(userId) && isValidId(progressId);
+        allow list: if isOwner(userId) && isValidId(userId);
+        allow create: if isOwner(userId) && isValidId(userId) && isValidId(progressId) && isValidStudyProgress(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(userId) && isValidId(progressId) && isValidStudyProgress(incoming(), userId) &&
+                      incoming().ownerId == existing().ownerId;
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(progressId);
+      }
+    }
+
+    // Connection Health Test Document
+    match /test/{testId} {
+      allow get: if isValidId(testId);
+      allow list, write: if false;
+    }
+  }
+}
